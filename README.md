@@ -15,6 +15,47 @@
   </a>
 </p>
 
+## 📊 Post-Hardening Analysis
+
+> All map queries returned no results due to zero malicious activity during the 24 hours following hardening.
+
+<p align="center">
+  <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/727edb36-b4e2-448d-aed0-60b5484ae91e" alt="No incidents after hardening" width="500"/>
+</p>
+
+---
+
+### 🔐 VLAN and Subnet Configuration
+
+<p align="center">
+  <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/67ba9152-de43-4345-82fd-92b2da05b9f2" alt="Subnet config 1" width="350"/>
+  <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/fa608462-bba8-4dea-975a-5c9fc9905081" alt="Subnet config 2" width="350"/>
+  <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/49cb6ca9-e3d9-4bd5-bea5-44e0a19cc78a" alt="Subnet config 3" width="350"/>
+</p>
+
+---
+
+### 🧰 Azure NIST Overview
+
+NIST SP 800-53 is a comprehensive guideline for security and privacy controls in federal information systems. It serves as the foundation for compliance frameworks like FedRAMP, CSF, and Azure Security Benchmark.
+
+<p align="center">
+  <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/ef0a32ee-daa3-4dd3-a6a2-c3e8d3ba5f66" alt="NIST overview chart" width="500"/>
+</p>
+
+To view NIST SP-800-53-R5 compliance:
+- Go to **Azure Home > Microsoft Defender for Cloud > Regulatory compliance > NIST SP-800-53-R5**
+
+<p align="center">
+  <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/00b13f92-53cb-4cec-a630-d168dcec4542" alt="Defender compliance 1" width="350"/>
+  <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/430f4980-c604-44d7-bc29-f468c3d18f01" alt="Defender compliance 2" width="350"/>
+  <img src="https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/821b1360-c5c8-4606-bd1b-f274761594a3" alt="Defender compliance 3" width="350"/>
+</p>
+
+
+
+
+
 ---
 
 <details open>
