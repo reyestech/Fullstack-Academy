@@ -26,8 +26,36 @@
 - [Metrics &amp; Results](#metrics--results)
 - [Key KQL Queries](#key-kql-queries)
 - [Screenshots](#screenshots)
+- [xxx](#xxx)
+</details>
+
+
+
+<details open>
+<summary>Table of Contents</summary>
+
+- [Introduction](#Introduction)
+- [Architecture](#architecture)
+- [Objective:](Objective:)
+- [Metrics &amp; Results](#metrics--results)
+- [Key KQL Queries](#key-kql-queries)
+- [Screenshots](#screenshots)
 - [Conclusion](#conclusion)
 </details>
+
+
+
+## Introduction
+We will establish a honeynet within our Microsoft Azure Security Information and Event Management (SIEM) system to attract malicious actors worldwide and provoke live attacks on our cloud environment. Our Security Operations Center (SOC) will log, monitor, and analyze the malicious traffic generated, enabling us to conduct incident response effectively. Subsequently, we will implement stringent hardening controls, ensure compliance with regulatory standards such as NIST 800-53, and adhere to Microsoft Defender for Cloud recommendations to fortify the security of our cloud infrastructure.
+
+
+![image](https://github.com/reyestech/Azure-Honeynet-and-Sentinel-Hardening-/assets/153461962/9859c84f-cf7b-4ccb-8ad7-4bf2dd5a35cb)
+
+## Objective:
+Over 24 hours, we observed attacks from various locations globally targeting our cloud environment, encompassing Windows Virtual Machines, SQL Servers, and Ubuntu Linux VMs. Log Analytics was employed to ingest logs from diverse sources, empowering Microsoft Sentinel to construct attack maps, trigger alerts, and initiate incident responses. Microsoft Defender for Cloud served as a crucial data source for the Log Analytics Workspace (LAW) and aided in evaluating the configuration of virtual machines in alignment with regulatory frameworks and security controls. I configured log collection within the vulnerable environment, established security metrics, and monitored the environment continuously for 24 hours. Following an investigation into the incidents flagged by Microsoft Sentinel during this timeframe, security controls were implemented to mitigate the identified threats and bolster the environment based on Microsoft Defender's recommendations. After another 24-hour monitoring phase, new metrics were gathered post-remediation, followed by the adoption of NIST 800-53 standards as a foundational framework to enhance the security posture of our cloud environment.
+
+## xxx
+ Sentinel to construct attack maps, trigger alerts, and initiate incident responses. Microsoft Defender for Cloud served as a crucial data source for the Log Analytics Workspace (LAW) and aided in evaluating the configuration of virtual machines in alignment with regulatory frameworks and security controls. I configured log collection within the vulnerable environment, established security metrics, and monitored the en
 
 ## Overview
 
