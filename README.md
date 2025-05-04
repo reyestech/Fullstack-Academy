@@ -1,7 +1,3 @@
-
-
-
-
 # 🛠️ Win‑Troubleshoot PowerShell Toolkit
 
 Modern cyber‑defence is equal parts **speed**, **visibility**, and **automation**. This repository delivers ready‑to‑run PowerShell utilities that give any Security Operations Center (SOC) or Windows administrator instant leverage: collect evidence in seconds, surface anomalies on‑demand, and kick‑off trusted remediation workflows — all without installing a single third‑party dependency.
@@ -10,7 +6,8 @@ Whether you’re a **junior analyst** looking to practise blue‑team fundamenta
 
 ---
 
-🗂️ **Table of Contents** </summary>
+<details>
+  <summary>🗂️ <strong>Table of Contents</strong></summary>
 
 1. [Quick Start Guide](#-quick-start-guide)
 2. [Script Catalogue](#-script-catalogue)
@@ -27,7 +24,7 @@ Whether you’re a **junior analyst** looking to practise blue‑team fundamenta
    * [Export‑WindowsFirewallRules.ps1](#🔟-export-windowsfirewallrulesps1)
 3. [Conclusion](#-conclusion)
 
-
+</details>
 
 ---
 
@@ -255,18 +252,6 @@ This toolkit is designed to showcase **practical PowerShell expertise** — the 
 > This toolkit is designed to showcase **practical PowerShell expertise** — the same skills you’ll leverage when integrating with enterprise SIEMs like Microsoft Sentinel or Splunk. Recruiters: each script is deliberately lightweight, heavily documented, and demonstrates **automation mindset** — a core competency for modern Cybersecurity Analysts. Engineers: clone, fork, or open a PR; security is a team sport!
 
 > **Next Steps:** Star ⭐ the repo if you find it useful, or raise an issue if you’d like new features. Happy hunting — and automate *all* the things! 🔍
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
