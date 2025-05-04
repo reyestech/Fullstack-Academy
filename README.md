@@ -1,3 +1,7 @@
+
+
+
+
 # 🛠️ Win‑Troubleshoot PowerShell Toolkit
 
 Modern cyber‑defence is equal parts **speed**, **visibility**, and **automation**. This repository delivers ready‑to‑run PowerShell utilities that give any Security Operations Center (SOC) or Windows administrator instant leverage: collect evidence in seconds, surface anomalies on‑demand, and kick‑off trusted remediation workflows — all without installing a single third‑party dependency.
@@ -6,7 +10,8 @@ Whether you’re a **junior analyst** looking to practise blue‑team fundamenta
 
 ---
 
-## 🗂️ Table of Contents
+<details>
+  <summary> 🗂️ **Table of Contents** </summary>
 
 1. [Quick Start Guide](#-quick-start-guide)
 2. [Script Catalogue](#-script-catalogue)
@@ -22,6 +27,8 @@ Whether you’re a **junior analyst** looking to practise blue‑team fundamenta
    * [Test‑NetworkConnectivity.ps1](#9️⃣-test-networkconnectivityps1)
    * [Export‑WindowsFirewallRules.ps1](#🔟-export-windowsfirewallrulesps1)
 3. [Conclusion](#-conclusion)
+
+</details>
 
 ---
 
@@ -51,7 +58,7 @@ Whether you’re a **junior analyst** looking to practise blue‑team fundamenta
 
 ## 📜 Script Catalogue
 
-### 1️⃣ Collect‑EventLogs
+### 1️⃣ Collect‑EventLogs.ps1
 
 **Purpose (detailed)**  ► When incidents strike, the first question is *“What happened, and when?”* This script automates forensic evidence collection by exporting Windows Event Logs for any time window you specify. Instead of clicking through Event Viewer and manually saving EVTX files, you receive tidy CSVs that slide straight into Excel, Log Parser, or your SIEM for timeline analysis.
 
@@ -69,30 +76,9 @@ Whether you’re a **junior analyst** looking to practise blue‑team fundamenta
 ./Collect-EventLogs.ps1 -HoursBack 24 -Logs 'System','Application' -OutputDir 'C:\IR\Logs'
 ```
 
-### Code
-
-```powershell
-param(
-    [int]      $HoursBack = 24,
-    [string[]] $Logs      = @('System','Application','Security'),
-    [string]   $OutputDir = (Join-Path $PWD 'EventLogs')
-)
-if (-not (Test-Path $OutputDir)) {
-    New-Item -ItemType Directory -Path $OutputDir | Out-Null
-}
-$start = (Get-Date).AddHours(-$HoursBack)
-
-foreach ($log in $Logs) {
-    Get-WinEvent -FilterHashtable @{ LogName = $log; StartTime = $start } |
-        Select TimeCreated, Id, LevelDisplayName, Message |
-        Export-Csv -NoTypeInformation -Path (Join-Path $OutputDir "$log.csv")
-}
-Write-Host "✔ Logs exported to $OutputDir"
-```
-
 ---
 
-### 2️⃣ Run‑SFCandDISM
+### 2️⃣ Run‑SFCandDISM.ps1
 
 **Purpose (detailed)**  ► System file corruption is a silent reliability killer. This script chains Microsoft’s two native repair tools — **System File Checker (SFC)** and **Deployment Image Servicing and Management (DISM)** — capturing their combined output into a timestamped log. Ideal for post‑compromise integrity checks or troubleshooting unexplained OS errors.
 
@@ -109,27 +95,9 @@ Write-Host "✔ Logs exported to $OutputDir"
 ./Run-SFCandDISM.ps1 -LogDir 'D:\HealthChecks'
 ```
 
-
-### Code
-
-```powershell
-param([string]$LogDir = (Join-Path $PWD 'HealthChecks'))
-if (-not (Test-Path $LogDir)) {
-    New-Item -ItemType Directory -Path $LogDir | Out-Null
-}
-$log = Join-Path $LogDir ("HealthCheck_{0:yyyyMMdd_HHmm}.txt" -f (Get-Date))
-
-"=== SFC ==="  | Tee-Object $log
-sfc /scannow   | Tee-Object $log -Append
-"=== DISM ===" | Tee-Object $log -Append
-DISM /Online /Cleanup-Image /RestoreHealth | Tee-Object $log -Append
-
-Write-Host "✔ Repair complete – see $log"
-```
-
 ---
 
-### 3️⃣ Get‑ActiveConnections
+### 3️⃣ Get‑ActiveConnections.ps1
 
 **Purpose (detailed)**  ► Malware loves to hide in plain sight by piggy‑backing on legitimate processes. This script surfaces every established outbound TCP session — tagging each with process name and the user that launched it — so analysts can swiftly spot unauthorised beacons or data exfiltration channels.
 
@@ -146,26 +114,9 @@ Write-Host "✔ Repair complete – see $log"
 ./Get-ActiveConnections.ps1 | Out-GridView
 ```
 
-
-### Code
-
-```powershell
-Get-NetTCPConnection -State Established | ForEach-Object {
-    $proc = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue
-    $user = (Get-CimInstance Win32_Process -Filter "ProcessId=$($_.OwningProcess)").GetOwner().User
-    [pscustomobject]@{
-        Local   = "$($_.LocalAddress):$($_.LocalPort)"
-        Remote  = "$($_.RemoteAddress):$($_.RemotePort)"
-        State   = $_.State
-        Process = $proc.ProcessName
-        User    = $user
-    }
-} | Sort Remote | Format-Table -AutoSize
-```
-
 ---
 
-### 4️⃣ Get‑SystemHealthSnapshot
+### 4️⃣ Get‑SystemHealthSnapshot.ps1
 
 **Purpose (detailed)**  ► Before you troubleshoot, you need a baseline. This script captures **real‑time CPU load**, **memory usage**, **free disk space**, and **pending Windows Update count** — all in one shot. Run it at ticket open and close to prove your remediation impact.
 
@@ -187,25 +138,7 @@ Get-NetTCPConnection -State Established | ForEach-Object {
 
 ---
 
-### Code
-
-```powershell
-$cpu = (Get-Counter '\Processor(_Total)\% Processor Time' -SampleInterval 1 -MaxSamples 3).CounterSamples.CookedValue |
-        Measure-Object -Average | Select-Object -ExpandProperty Average
-$mem = Get-CimInstance Win32_OperatingSystem
-$disk = Get-PSDrive -PSProvider FileSystem | Select Name,@{n='Free(GB)';e={[math]::Round($_.Free/1GB,1)}}
-
-[pscustomobject]@{
-    Timestamp       = Get-Date
-    CPU_Load_Percent= [math]::Round($cpu,1)
-    RAM_Used_GB     = [math]::Round(($mem.TotalVisibleMemorySize-$mem.FreePhysicalMemory)/1MB,2)
-    Pending_Updates = (Get-WindowsUpdate -MicrosoftUpdate -IgnoreReboot -ErrorAction SilentlyContinue).Count
-    Disk_Free       = ($disk | Out-String).Trim()
-} | Format-List
-```
----
-
-### 5️⃣ Detect‑BruteForceLogons
+### 5️⃣ Detect‑BruteForceLogons.ps1 Detect‑BruteForceLogons.ps1
 
 **Purpose (detailed)**  ► A burst of failed logon attempts is a classic pre‑attack signal. This script scans Security Event ID 4625 for the last *N* hours, aggregates by **Source IP & Account**, and flags any entity exceeding a threshold you define. Perfect for feeding an alert into Sentinel, Splunk, or emailing your blue‑team.
 
@@ -221,36 +154,10 @@ $disk = Get-PSDrive -PSProvider FileSystem | Select Name,@{n='Free(GB)';e={[math
 ```powershell
 ./Detect-BruteForceLogons.ps1 -HoursBack 12 -Threshold 15 -Report '.\bruteforce.csv'
 ```
-### Code
-
-```powershell
-param(
-  [int]$HoursBack = 24,
-  [int]$Threshold = 10,
-  [string]$Report = (Join-Path $PWD 'BruteForceReport.csv')
-)
-$start = (Get-Date).AddHours(-$HoursBack)
-$events = Get-WinEvent -FilterHashtable @{ LogName='Security'; Id=4625; StartTime=$start }
-
-$patternIP      = '(?<=Source Network Address:\s+)(\d{1,3}(?:\.\d{1,3}){3})'
-$patternAccount = '(?<=Account Name:\s+)(\S+)'
-
-$data = $events | ForEach-Object {
-    $ip  = [regex]::Match($_.Message, $patternIP).Value
-    $acc = [regex]::Match($_.Message, $patternAccount).Value
-    if ($ip) { [pscustomobject]@{ IP=$ip; Account=$acc } }
-} | Group-Object IP,Account | Where-Object Count -ge $Threshold |
-    Select-Object @{n='IP';       e={$_.Name.Split(',')[0]}},
-                  @{n='Account';  e={$_.Name.Split(',')[1]}},
-                  @{n='Attempts'; e={$_.Count}}
-
-$data | Export-Csv -NoTypeInformation -Path $Report
-Write-Host "✔ Report written to $Report"
-```
 
 ---
 
-### 6️⃣ Get‑ListeningPorts
+### 6️⃣ Get‑ListeningPorts.ps1
 
 **Purpose (detailed)**  ► Knowing what’s *listening* is as important as knowing what’s *talking*. This utility enumerates every TCP & UDP port in LISTEN state, maps each to its owning process, and prints the executable path — a rapid way to spot shadow IT or malware‑spawned services.
 
@@ -264,22 +171,6 @@ Write-Host "✔ Report written to $Report"
 
 ```powershell
 ./Get-ListeningPorts.ps1 | Export-Csv '.\listening.csv' -NoTypeInformation
-```
-### Code
-
-```powershell
-$tcp = Get-NetTCPConnection -State Listen
-$udp = Get-NetUDPEndpoint
-($tcp + $udp) | ForEach-Object {
-    $proc = Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue
-    [pscustomobject]@{
-        Protocol = $_.GetType().Name -replace 'Net','' -replace 'Endpoint',''
-        Local    = "$($_.LocalAddress):$($_.LocalPort)"
-        PID      = $_.OwningProcess
-        Process  = $proc.ProcessName
-        Path     = $proc.Path
-    }
-} | Sort-Object Local | Format-Table -AutoSize
 ```
 
 ---
@@ -300,19 +191,6 @@ $udp = Get-NetUDPEndpoint
 ./Audit-LocalAdminMembers.ps1 | Out-File '.\admin-audit.txt'
 ```
 
-### Code
-
-```powershell
-$default = 'Administrator','Domain Admins','SYSTEM','Administrators'
-Get-LocalGroupMember -Group 'Administrators' | ForEach-Object {
-    [pscustomobject]@{
-        Member = $_.Name
-        Type   = $_.ObjectClass
-        Note   = if ($default -contains $_.Name) { 'Default' } else { '⚠ Review' }
-    }
-} | Format-Table -AutoSize
-```
-
 ---
 
 ### 8️⃣ Invoke‑WindowsDefenderScan.ps1
@@ -331,26 +209,9 @@ Get-LocalGroupMember -Group 'Administrators' | ForEach-Object {
 ./Invoke-WindowsDefenderScan.ps1 -ScanType Full
 ```
 
-### Code
-
-```powershell
-param([ValidateSet('Quick','Full')][string]$ScanType='Quick')
-Start-MpScan -ScanType $ScanType
-Write-Host "Scanning ($ScanType)…"
-while ((Get-MpComputerStatus).PerformingQuickScan -or (Get-MpComputerStatus).PerformingFullScan) {
-    Start-Sleep 5
-}
-$threats = Get-MpThreat
-if ($threats) {
-    $threats | Format-Table
-} else {
-    Write-Host "✔ No threats detected."
-}
-```
-
 ---
 
-### 9️⃣ Test‑NetworkConnectivity
+### 9️⃣ Test‑NetworkConnectivity.ps1
 
 **Purpose (detailed)**  ► Is it the host? The network? Or the destination? This script parallel‑tests reachability to critical hosts (gateway, DNS, SaaS endpoints) by combining **ping latency** and **traceroute hop‑count** — giving you at‑a‑glance health before you escalate to NetOps.
 
@@ -365,21 +226,6 @@ if ($threats) {
 
 ```powershell
 ./Test-NetworkConnectivity.ps1 -Targets '8.8.8.8','1.1.1.1','microsoft.com'
-```
-### Code
-
-```powershell
-param([string[]]$Targets = (Test-Path './targets.txt') ? (Get-Content './targets.txt') : @('8.8.8.8'))
-$results = foreach ($t in $Targets) {
-    if (Test-Connection -Quiet -Count 4 -ComputerName $t) {
-        $avg = (Test-Connection -Count 4 $t | Measure-Object -Property ResponseTime -Average).Average
-        [pscustomobject]@{ Target=$t; Reachable=$true; AvgRTT_ms=[math]::Round($avg,1); Hops='—' }
-    } else {
-        $hops = (Test-NetConnection $t -TraceRoute).TraceRoute.Length
-        [pscustomobject]@{ Target=$t; Reachable=$false; AvgRTT_ms='—'; Hops=$hops }
-    }
-}
-$results | Format-Table -AutoSize
 ```
 
 ---
@@ -399,30 +245,6 @@ $results | Format-Table -AutoSize
 ```powershell
 ./Export-WindowsFirewallRules.ps1 -OutFile '.\firewall-backup.json'
 ```
-### Code
-
-```powershell
-param([string]$OutFile = (Join-Path $PWD 'FirewallRules.json'))
-
-$rules = Get-NetFirewallRule | ForEach-Object {
-    $port = Get-NetFirewallPortFilter -AssociatedNetFirewallRule $_ -ErrorAction SilentlyContinue
-    [pscustomobject]@{
-        Name      = $_.Name
-        Direction = $_.Direction
-        Action    = $_.Action
-        Profile   = $_.Profile
-        Enabled   = $_.Enabled
-        Program   = $_.ApplicationName
-        Service   = $_.ServiceName
-        Protocol  = $port.Protocol
-        LocalPort = $port.LocalPort
-        RemotePort= $port.RemotePort
-    }
-}
-
-$rules | ConvertTo-Json -Depth 4 | Out-File -FilePath $OutFile -Encoding utf8
-Write-Host "✔ Firewall rules exported to $OutFile"
-```
 
 ---
 
@@ -430,11 +252,32 @@ Write-Host "✔ Firewall rules exported to $OutFile"
 
 This toolkit is designed to showcase **practical PowerShell expertise** — the same skills you’ll leverage when integrating with enterprise SIEMs like Microsoft Sentinel or Splunk. Recruiters: each script is deliberately lightweight, heavily documented, and demonstrates **automation mindset** — a core competency for modern Cybersecurity Analysts. Engineers: clone, fork, or open a PR; security is a team sport!
 
-> **Next Steps:** Star ⭐ the repo if you find it useful, or raise an issue if you’d like new features. Happy hunting — and automate *all* the things! 
+> **Next Steps:** Star ⭐ the repo if you find it useful, or raise an issue if you’d like new features. Happy hunting — and automate *all* the things! 🔍 Conclusion
+> This toolkit is designed to showcase **practical PowerShell expertise** — the same skills you’ll leverage when integrating with enterprise SIEMs like Microsoft Sentinel or Splunk. Recruiters: each script is deliberately lightweight, heavily documented, and demonstrates **automation mindset** — a core competency for modern Cybersecurity Analysts. Engineers: clone, fork, or open a PR; security is a team sport!
 
 > **Next Steps:** Star ⭐ the repo if you find it useful, or raise an issue if you’d like new features. Happy hunting — and automate *all* the things! 🔍
 
-Happy hunting 🔍 — feel free to open an issue or request with new scripts!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <img src="https://i.imgur.com/1C8iiWB.png" height="80%" width="80%" alt="Disk Sanitization Steps"/>
 
