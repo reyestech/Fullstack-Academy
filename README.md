@@ -10,8 +10,7 @@ Whether you’re a **junior analyst** looking to practise blue‑team fundamenta
 
 ---
 
-<details>
-  <summary> 🗂️ **Table of Contents** </summary>
+🗂️ **Table of Contents** </summary>
 
 1. [Quick Start Guide](#-quick-start-guide)
 2. [Script Catalogue](#-script-catalogue)
@@ -28,7 +27,7 @@ Whether you’re a **junior analyst** looking to practise blue‑team fundamenta
    * [Export‑WindowsFirewallRules.ps1](#🔟-export-windowsfirewallrulesps1)
 3. [Conclusion](#-conclusion)
 
-</details>
+
 
 ---
 
