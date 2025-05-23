@@ -8,19 +8,21 @@
 1
 ----
 
+![image](https://github.com/user-attachments/assets/e87193c0-4852-496e-9017-ab7004db64d4)
+
 # Azure‑Sentinel‑KQL‑Hunting‑&‑Detection‑Toolkit
 
-![Sentinel Banner](https://raw.githubusercontent.com/reyestech/assets/main/sentinel_kql_toolkit_banner.png)
 
 ## Overview
 
-Proactive cloud defence hinges on **fast analytics**, **threat visibility**, and **reusable detection logic**. This repository curates a **suite of 12 production‑ready Kusto Query Language (KQL) searches** designed for **Microsoft Sentinel** and **Azure Monitor Logs**. With these queries you can:
+Proactive cloud defense depends on rapid analytics, thorough threat visibility, and reusable detection logic. This repository presents a curated collection of 12 production-ready Kusto Query Language (KQL) searches explicitly designed for Microsoft Sentinel and Azure Monitor Logs. Utilizing these queries enables users to:
 
 * 🔍 **Surface critical security events** in seconds across petabytes of log data.
 * 🛡️ **Detect sophisticated attacker tradecraft** and anomalous behaviour before impact.
 * ⚡ **Accelerate hunt-to-automation workflows**, transforming ad‑hoc insight into always‑on analytics rules.
 
-Whether you’re a SOC analyst building your first hunt workbook, a Cloud Security Engineer codifying blue‑team knowledge, or a recruiter scanning GitHub for real‑world Sentinel skills, this toolkit showcases **production‑safe KQL craftsmanship**.
+
+This toolkit is intended for various professionals, including Security Operations Center (SOC) analysts constructing their initial hunt workbooks, Cloud Security Engineers codifying blue-team expertise, and recruiters assessing real-world Sentinel capabilities. It exemplifies high-quality KQL craftsmanship that is suitable for production environments.
 
 > Use the copy icon next to each fenced KQL block (`📋`) to paste directly into Log Analytics or the Sentinel rule wizard.
 
@@ -52,7 +54,7 @@ Whether you’re a SOC analyst building your first hunt workbook, a Cloud Securi
 
 ## Quick‑Start
 
-Deploying the toolkit is trivial: clone or fork the repo, open any `.kql` file in the **Log Analytics Query** blade or **Sentinel Analytics Rule Wizard**, tweak parameters such as `TimeRange` or `Whitelist` tables, then save as a **Scheduled Query Rule** or **Hunting query**. Each query is fully commented, parameter‑driven, and safe to run read‑only—no data mutation commands are used.
+The deployment of this toolkit is a straightforward process: clone or fork the repository, open any .kql file within the Log Analytics Query blade or Sentinel Analytics Rule Wizard, modify parameters such as TimeRange or Whitelist tables, and save the adjustments as a Scheduled Query Rule or Hunting query. Each query includes thorough commentary, is driven by parameters, and is safely executable in read-only mode, thereby eliminating the risk of data mutation commands.
 
 ---
 
@@ -60,9 +62,10 @@ Deploying the toolkit is trivial: clone or fork the repo, open any `.kql` file i
 
 ### 1️⃣ Failed Sign‑In Surge
 
-A sudden uptick in authentication failures is often a prelude to brute‑force or credential‑stuffing attacks. This KQL query baselines sign‑in error rates per user and tenant, then flags any hour where failures exceed the previous week’s maximum by a configurable factor. Analysts receive a concise list of usernames, IPs, and client apps driving the spike, enabling rapid blocking or conditional access enforcement.
+A sudden increase in authentication failures often indicates potential brute-force or credential-stuffing attacks. This KQL query establishes a baseline of sign-in error rates for each user and tenant, flagging any hour in which failures exceed the maximum recorded during the previous week by a configurable factor. Analysts receive a succinct list of affected usernames, IP addresses, and client applications, facilitating rapid blocking or enforcement of conditional access.
 
-By converting the logic into an analytics rule, you transform a one‑off investigation into a perpetual guardrail—ensuring future surges trigger automated playbooks such as token revocation or SOC paging.
+By converting this logic into an analytics rule, organizations transition from one-time investigations to ongoing protective measures, ensuring that future surges automatically activate incident response protocols.
+
 
 #### How it works
 
@@ -98,9 +101,10 @@ SigninLogs
 
 ### 2️⃣ Impossible Travel
 
-Attackers who harvest credentials often log in from geographically distant locations within impossibly short intervals. This query detects sequential sign‑ins for the same user where the calculated travel speed between source IP geolocations exceeds a safe human threshold (default 500 mph / 800 kmh). Results highlight the first and second sign‑in, plus estimated speed, so responders can confirm compromise and enforce MFA resets.
+Attackers may exploit stolen credentials by logging in from geographically distant locations within unrealistically short timeframes. This query detects sequential sign-ins from the same user when the calculated travel speed between source IP geolocations surpasses a predetermined human threshold (default set to 500 mph / 800 km/h). The results detail the first and subsequent sign-ins alongside the estimated speed, empowering response teams to validate potential compromises and initiate multi-factor authentication resets.
 
-Deploying as a continuous rule dramatically reduces dwell time for account takeovers, especially in hybrid workforces accessing resources from mixed IP ranges.
+Continuous deployment of this rule significantly reduces dwell time associated with account takeovers, especially in hybrid workforces utilizing diverse IP ranges.  
+
 
 #### How it works
 
@@ -131,9 +135,9 @@ SigninLogs
 
 ### 3️⃣ Privilege Escalation Alert
 
-Elevations from low‑privileged roles to high‑impact ones (e.g., `Owner`, `Global Administrator`) can rapidly expand an attacker’s blast radius. This query scans `AuditLogs` for role‑assignment operations, enriches with actor IP and device details, and filters against an optional change‑window whitelist. Any escalations outside approved maintenance windows merit immediate review and, if necessary, access revocation.
+Elevations from lower-privileged roles to higher-impact positions (e.g., Owner, Global Administrator) can drastically increase an attacker's potential range of actions. This query scans AuditLogs for role-assignment events, enhances the findings with details regarding the actor's IP and device, and filters against an optional change-window whitelist. Any escalations outside pre-approved maintenance windows necessitate immediate review and potential access revocation. 
 
-Automating the logic as an hourly analytics rule produces a tamper‑proof ledger of privilege changes, lightening compliance workloads and reducing mean time to detect insider threats.
+Automating this logic as an hourly analytics rule establishes a tamper-proof log of privilege changes, alleviating compliance burdens and improving the timeliness of detecting insider threats.  
 
 #### How it works
 
@@ -158,9 +162,9 @@ AuditLogs
 
 ### 4️⃣ New External App Registration
 
-Malicious OAuth consent grants and rogue multi‑tenant apps are increasingly leveraged for stealthy persistence. This query spots newly registered Azure AD applications whose `PublisherDomain` **does not** match your tenant’s verified domain, exposing risky third‑party or attacker‑controlled integrations. Each hit lists the permissions requested and the creating principal so the SOC can quickly revoke consent.
+Malicious OAuth consent grants and unauthorized multi-tenant applications are increasingly leveraged for stealthy persistence. This query identifies newly registered Azure AD applications with a PublisherDomain that does not align with the verified domain of your tenant, thereby exposing potentially risky third-party or attacker-controlled integrations. Each identified application outlines the permissions requested and the creator's details, allowing the Security Operations Center (SOC) to revoke consent promptly.  
 
-When transformed into a scheduled rule, you gain a constant watchtower against supply‑chain incursions via OAuth.
+Organizations gain continuous oversight against potential supply-chain incursions via OAuth by converting this query into a scheduled rule.  
 
 #### How it works
 
@@ -185,9 +189,9 @@ AADServicePrincipalCreationLogs
 
 ### 5️⃣ Rare Process Creation on Server
 
-Unexpected executables running on production servers often herald post‑exploitation activity. This query baselines process launches over the last 30 days and isolates today’s executions whose frequency falls below the 1st percentile—surfacing suspicious binaries regardless of hash or signature evasion. Contextual fields such as command line, parent process, and user help analysts decide whether to quarantine or whitelist.
+The presence of unexpected executables on production servers may signal post-exploitation activities. This query establishes a baseline of process launches over the previous 30 days and identifies today's executions that fall below the 1st percentile—thereby uncovering suspicious binaries regardless of hashing or signature evasion. Contextual fields, such as command line, parent process, and user, assist analysts in determining whether to quarantine or allowlist the identified processes.  
 
-This behaviour‑first lens complements signature‑based defences, catching renamed or LOLBin misuse that traditional AV misses.
+This behavior-focused approach complements traditional signature-based defenses, effectively detecting renamed executables or the misuse of legitimate binaries that conventional antivirus solutions may overlook.  
 
 #### How it works
 
@@ -219,9 +223,10 @@ today
 
 ### 6️⃣ High‑Volume Data Exfil
 
-Massive outbound transfers to unfamiliar destinations can indicate data theft or misconfigured backups. This query analyses NSG flow logs (`AzureNetworkAnalytics_CL`) or firewall logs to identify public IPs receiving volumes 5× above the median for the same VM over the previous week. Outputs include byte counts, destination, and protocol—arming responders to cut egress or throttle bandwidth.
+Significant outbound data transfers to unfamiliar destinations may indicate potential data theft or misconfigured backup systems. This analysis leverages NSG flow logs (AzureNetworkAnalytics_CL) or firewall logs to identify public IP addresses receiving data volumes that exceed five times the median for the same virtual machine (VM) over the preceding week. The output includes byte counts, destination details, and protocol information, enabling responders to implement measures such as cutting egress or throttling bandwidth.
 
-Paired with automated ticketing, the alert helps enforce data‑loss‑prevention controls across hybrid infrastructures.
+Integrating this alert with automated ticketing systems reinforces data loss prevention protocols across hybrid infrastructures.
+
 
 #### How it works
 
@@ -252,9 +257,9 @@ recent
 
 ### 7️⃣ DNS Tunnelling Detection
 
-Malware and insiders alike abuse DNS to hide command‑and‑control or exfiltration traffic. This query scrutinises DNS events for excessively long sub‑domains, high entropy (indicating encoded payloads), and large NXDOMAIN ratios—three hallmarks of tunnelling techniques. Analysts receive a prioritised list of suspect domains, supporting swift sinkholing or firewall blocks.
+Malware and insiders may exploit DNS protocols to obfuscate command-and-control or data exfiltration activities. This query meticulously examines DNS events for excessively lengthy subdomains, high entropy values (indicative of encoded payloads), and elevated NXDOMAIN response ratios—three specific indicators often associated with tunneling techniques. Analysts receive a prioritized list of suspicious domains, facilitating swift actions such as sinkholing or firewall blocking.
 
-When converted to an analytic rule, this detection raises early flags before full compromise unfolds.
+Once transformed into an analytic rule, this detection method serves to flag issues early, potentially preventing full-scale compromises.
 
 #### How it works
 
@@ -280,9 +285,9 @@ DnsEvents
 
 ### 8️⃣ Suspicious PowerShell Usage
 
-PowerShell remains a preferred attacker toolkit due to its native reach and stealth. This query targets command‑lines containing obfuscation flags, downloaders, or AMSI bypass keywords, while excluding signed Microsoft scripts. Hits include device, user, truncated command line, and script hash, enabling containment of compromised endpoints.
+Attackers frequently utilize PowerShell due to its inherent capabilities and stealthy nature. This query specifically targets command lines containing obfuscation flags, downloaders, or keywords that may bypass AMSI, while excluding signed Microsoft scripts. The output incorporates information on devices, users, truncated command lines, and script hashes, thus allowing for prompt containment of potentially compromised endpoints.
 
-Automated response can isolate or offboard hosts before payload deployment, slashing attacker dwell time.
+Automated responses can effectively isolate or offboard hosts prior to payload deployment, thereby minimizing the attacker’s dwell time.
 
 #### How it works
 
@@ -306,9 +311,9 @@ DeviceProcessEvents
 
 ### 9️⃣ Azure Resource Deletion Spike
 
-Mass deletions of cloud resources can stem from misfired automation or a malicious actor with stolen credentials. This query monitors `AzureActivity` for successful `Delete` operations and compares the hourly count against the highest hourly volume seen in the last 90 days. Surpassing that watermark triggers an alert, prompting teams to halt destructive scripts or initiate recovery.
+Massive deletions of cloud resources can stem from erroneous automation processes or malicious activities involving compromised credentials. This query monitors `AzureActivity` for successful deletion operations and compares the hourly deletion count against the highest hourly volume recorded in the last 90 days. An alert will be triggered if the current deletion volume surpasses this maximum, prompting teams to halt destructive automation or initiate recovery processes.
 
-Tying the alert to a Logic App can automatically lock the subscription or notify on‑call engineers via Teams, shortening reaction windows.
+Integrating the alert with a Logic App can automatically lock the subscription or notify on-call engineers via Teams, thereby reducing response times.
 
 #### How it works
 
@@ -336,9 +341,9 @@ HourlyDeletes
 
 ### 🔟 Multiple MFA Denials
 
-An influx of MFA denials within minutes usually signals password‑spray or user confusion exploited by phishing. This query tallies denial responses (result code `500121`) over a 30‑minute sliding window, grouping by user and IP. Entities exceeding five denials surface in the results, equipping identity teams to reset credentials or educate users.
+A sudden increase in MFA denial occurrences within a brief time frame generally indicates either a password-spray attack or user confusion, potentially exploited through phishing. This query aggregates denial responses over a 30-minute sliding window, grouping results by user and IP address. Entities recording more than five denials are highlighted in the results, empowering identity teams to reset credentials or provide necessary user education.
 
-Automated containment via Conditional Access policies can immediately block suspicious IPs, curbing brute‑force persistence.
+Automated containment through Conditional Access policies can immediately block suspicious IP addresses, thereby mitigating brute-force attempts.
 
 #### How it works
 
@@ -361,9 +366,11 @@ SigninLogs
 
 ### 1️⃣1️⃣ Rare Service‑Principal Usage
 
-Service principals normally follow predictable schedules. Deviations—either sudden spikes or first‑time sign‑ins—can indicate credential leakage or automation gone awry. This query baselines 30 days of non‑interactive sign‑ins per SP and flags any that exceed the 95th percentile today. Metadata such as resource and IP enable swift investigation and scope containment.
 
-Visualising the metric in a Workbook keeps cloud‑to‑cloud trust relationships transparent and accountable.
+Service principals typically exhibit predictable usage patterns. Deviations, such as unexpected spikes or first-time sign-ins, may suggest credential leakage or unanticipated automation. This query establishes a baseline from the previous 30 days of non-interactive sign-ins per service principal, flagging any instances that exceed the 95th percentile for the current day. Metadata, including resource and IP information, allows for rapid investigation and containment.
+
+Visualizing this metric in a Workbook fosters transparency and accountability within cloud-to-cloud trust relationships.
+
 
 #### How it works
 
@@ -392,9 +399,9 @@ AADNonInteractiveUserSignInLogs
 
 ### 1️⃣2️⃣ Unusual VM Guest Login Geo
 
-Hands‑on‑keyboard intrusions often start with interactive logons from unexpected countries. By correlating Windows `SecurityEvent` ID 4624 and Linux `sshd` successes with GeoIP lookups, this query identifies the first time a given VM sees a login from a new country within the past 24 hours. Output includes user, IP, geo, and host, giving defenders a clear signal to investigate or geo‑lock access.
+Hands-on keyboard intrusions often begin with interactive logins from unexpected countries. By correlating Windows Security Event ID 4624 and Linux SSH login successes with GeoIP lookups, this query identifies the first time a given VM encounters a login from a new country within the past 24 hours. The output includes user information, IP address, geographic location, and host details, providing defenders with a clear signal to investigate or geo-lock access.
 
-Scheduling the detection ensures any anomalous geolocation triggers near‑real‑time response, especially important for regulated environments with strict data residency requirements.
+Scheduling this detection ensures that any anomalous geolocation triggers a near-real-time response, which is especially crucial for regulated environments with strict data residency requirements.
 
 #### How it works
 
@@ -428,9 +435,9 @@ recent
 | order by TimeGenerated desc
 ```
 
-Unexpected interactive logins to Windows or Linux IaaS VMs from foreign geolocations can presage hands‑on‑keyboard activity. By correlating `SecurityEvent` (Windows) and `Syslog` (Linux) logins with `GeoInfo` on source IP, this query detects first‑seen countries per VM in the last 90 days. Output includes username, country, city, and timestamp.
+Unexpected interactive logins to Windows or Linux IaaS VMs from foreign geolocations can indicate potential hands-on keyboard activity. By correlating Security Event (Windows) and Syslog (Linux) logins with GeoInfo based on source IP, this query detects first-seen countries for each VM over the last 90 days. The output includes username, country, city, and timestamp.
 
-SOC teams can instantly quarantine VMs or enable JIT access only to sanctioned locations.
+SOC teams can quickly quarantine VMs or enable Just-In-Time (JIT) access only to sanctioned locations.
 
 #### How it works
 
@@ -443,7 +450,12 @@ SOC teams can instantly quarantine VMs or enable JIT access only to sanctioned l
 
 ## Conclusion
 
-The **Azure‑Sentinel‑KQL‑Hunting‑&‑Detection‑Toolkit** distils field‑tested detection logic into reusable building blocks, bridging the gap between isolated investigations and codified security posture. By embracing KQL’s expressive analytics and wrapping each query with operational context, the toolkit accelerates your journey from raw logs to automated response.
+The Azure Sentinel KQL Hunting and Detection Toolkit is designed to bring together compelling detection logic validated through practical use, allowing users to create reusable components for their security operations. This toolkit is a crucial link between isolated investigative efforts and establishing a comprehensive and formalized security posture.
+
+By harnessing the robust analytical features of Kusto Query Language (KQL), the toolkit enables users to perform in-depth data analysis easily. It goes a step further by adding operational context to each query, ensuring that the insights generated are not only accurate but also relevant to the specific circumstances of the organization.
+
+This approach accelerates the transition from merely collecting and analyzing raw log data to implementing automated responses to potential security threats. As a result, security teams can respond more swiftly and effectively to incidents, ultimately strengthening the organization's overall security framework.
+
 
 Fork, star ⭐, and contribute additional hunts—together we can sharpen cloud defences and raise the collective bar for threat detection in Microsoft Sentinel. 🔍 **Happy hunting—and automate *all* the detections!**
 
